@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-
 
 namespace WindowsFormsApp1
 {
@@ -16,59 +15,12 @@ namespace WindowsFormsApp1
     {
         private Dictionary<string, Dictionary<string, string>> subjectGrades = new Dictionary<string, Dictionary<string, string>>();
         private string currentSubject;
+        private bool isTextChanging = false;
 
         public Form1()
         {
             InitializeComponent();
         }
-
-        private void buttonImportujTabulku_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-                openFileDialog.Title = "Importuj tabuľku";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        string filePath = openFileDialog.FileName;
-
-                        // Skúsime načítať súbor s Windows-1250 kódovaním (stredoeurópske kódovanie)
-                        using (StreamReader sr = new StreamReader(filePath, Encoding.GetEncoding("windows-1250")))
-                        {
-                            dataGridView1.Rows.Clear(); // Vyčistíme tabuľku pred importom
-                            int id = 1; // Automatické ID
-
-                            string line;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                // Podpora viacerých oddeľovačov: čiarka, bodkočiarka, tabulátor
-                                string[] parts = line.Split(new char[] { ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                                if (parts.Length >= 2) // Očakávame aspoň meno a priezvisko
-                                {
-                                    string meno = parts[0].Trim();
-                                    string priezvisko = parts[1].Trim();
-
-                                    dataGridView1.Rows.Add(id, meno, priezvisko);
-                                    id++;
-                                }
-                            }
-                        }
-
-                        // Synchronizácia po importe
-                        SyncNames();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Chyba pri načítaní súboru: {ex.Message}", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
-
 
         private void UpdateStudentIDs()
         {
@@ -80,6 +32,138 @@ namespace WindowsFormsApp1
                 }
             }
         }
+
+        private void dataGridView2_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            // Check if the edited column is Column2Znamka (grades column)
+            if (dataGridView2.CurrentCell.ColumnIndex == dataGridView2.Columns["Column2Znamka"].Index)
+            {
+                TextBox textBox = e.Control as TextBox;
+                if (textBox != null)
+                {
+                    // Remove previous event handlers to avoid duplication
+                    textBox.TextChanged -= TextBox_TextChanged;
+                    textBox.KeyDown -= TextBox_KeyDown;
+
+                    // Add new event handlers
+                    textBox.TextChanged += TextBox_TextChanged;
+                    textBox.KeyDown += TextBox_KeyDown;
+                }
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (isTextChanging) return; // Prevent recursive changes
+
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                isTextChanging = true;
+
+                string currentText = textBox.Text;
+
+                // Remove invalid characters
+                if (currentText.Length > 0 && !"12345,".Contains(currentText.Last()))
+                {
+                    currentText = currentText.Substring(0, currentText.Length - 1);
+                    textBox.Text = currentText;
+                    textBox.SelectionStart = currentText.Length;
+                }
+
+                // Automatically add a comma after valid grades
+                if (currentText.Length > 0 && "12345".Contains(currentText.Last()))
+                {
+                    if (!currentText.EndsWith(","))
+                    {
+                        currentText += ",";
+                        textBox.Text = currentText;
+                        textBox.SelectionStart = currentText.Length;
+                        //dataGridView2.Rows[dataGridView2.CurrentCell.RowIndex].Cells["Column2Priemer"].Value = "aa";
+                    }
+                }
+
+                // Update the average in Column2Priemer
+                //UpdateAverageForRow();
+
+                isTextChanging = false;
+            }
+        }
+
+        private void dataGridView2_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == dataGridView2.Columns["Column2Znamka"].Index)
+            {
+                UpdateAverageForAllRows();
+            }
+        }
+
+        private void UpdateAverageForAllRows()
+        {
+            // Loop through each row in the DataGridView
+            foreach (DataGridViewRow row in dataGridView2.Rows)
+            {
+                if (!row.IsNewRow) // Skip the new row placeholder
+                {
+                    string gradesText = row.Cells["Column2Znamka"].Value?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(gradesText))
+                    {
+                        // Parse the grades, ignoring empty values
+                        var grades = gradesText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(g => int.TryParse(g, out int grade) ? grade : (int?)null)
+                                               .Where(g => g.HasValue)
+                                               .Select(g => g.Value)
+                                               .ToList();
+
+                        // Calculate the average
+                        if (grades.Count > 0)
+                        {
+                            double average = grades.Average();
+                            row.Cells["Column2Priemer"].Value = average.ToString("F2"); // Format to 2 decimal places
+                        }
+                        else
+                        {
+                            row.Cells["Column2Priemer"].Value = ""; // Clear if no valid grades
+                        }
+                    }
+                    else
+                    {
+                        row.Cells["Column2Priemer"].Value = ""; // Clear if no grades
+                    }
+                }
+            }
+        }
+
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                if (e.KeyCode == Keys.Back)
+                {
+                    string currentText = textBox.Text;
+
+                    // Handle backspace to delete a grade and its trailing comma
+                    if (currentText.Length > 0 && currentText.Last() == ',')
+                    {
+                        // Remove the trailing comma and the preceding grade
+                        textBox.Text = currentText.Substring(0, currentText.Length - 2);
+                        textBox.SelectionStart = textBox.Text.Length; // Keep cursor at the end
+                        e.Handled = true; // Prevent default backspace behavior
+                    }
+                    else if (currentText.Length > 0)
+                    {
+                        // Remove just the last character (if not a trailing comma)
+                        textBox.Text = currentText.Substring(0, currentText.Length - 1);
+                        textBox.SelectionStart = textBox.Text.Length; // Keep cursor at the end
+                        e.Handled = true; // Prevent default backspace behavior
+                    }
+                }
+            }
+        }
+
 
         private void SyncNames()
         {
@@ -108,6 +192,7 @@ namespace WindowsFormsApp1
                     dataGridView2.Rows.Add(id, priezvisko, meno, existingGrade);
                 }
             }
+            UpdateAverageForAllRows();
         }
 
         private void SaveCurrentSubjectGrades()
@@ -241,6 +326,56 @@ namespace WindowsFormsApp1
             LoadSubjectGrades(currentSubject);
             SyncNames();
             labelPredmet.Text = currentSubject;
+        }
+
+        private void buttonImport_Click(object sender, EventArgs e)
+        {
+            // Open the OpenFileDialog to select a CSV file
+            openFileDialogSubor.Filter = "CSV Files|*.csv";
+            openFileDialogSubor.Title = "Select a CSV File";
+
+            if (openFileDialogSubor.ShowDialog() != DialogResult.OK)
+                return;
+
+            string menoSuboru = openFileDialogSubor.FileName;
+
+            try
+            {
+                // Open the file for reading
+                StreamReader subor = new StreamReader(menoSuboru, Encoding.Default);
+
+                // Skip the header line (first row in the file)
+                string hlavicka = subor.ReadLine();
+
+                // Clear existing rows in the DataGridView
+                dataGridView1.Rows.Clear();
+
+                // Read the file line by line
+                string riadok;
+                while ((riadok = subor.ReadLine()) != null)
+                {
+                    // Split the line by semicolon
+                    string[] hodnoty = riadok.Split(';');
+
+                    // Add the values to DataGridView1 (assumes two columns: Priezvisko and Meno)
+                    if (hodnoty.Length >= 2)
+                    {
+                        dataGridView1.Rows.Add("", hodnoty[0], hodnoty[1]);
+                    }
+                }
+
+                // Close the file
+                subor.Close();
+
+                // Update the student IDs after importing
+                UpdateStudentIDs();
+
+                MessageBox.Show("Names imported successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error reading file: {ex.Message}");
+            }
         }
     }
 }

@@ -28,17 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ColumnID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnPriezvisko = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMeno = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.Column2ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2Priezvisko = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2Meno = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2Znamka = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonPridajStudenta = new System.Windows.Forms.Button();
             this.buttonVymazStudenta = new System.Windows.Forms.Button();
             this.labelVyberSiPredmet = new System.Windows.Forms.Label();
@@ -48,13 +44,19 @@
             this.buttonPridajPredmet = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonImport = new System.Windows.Forms.Button();
             this.buttonVymazPredmet = new System.Windows.Forms.Button();
             this.comboBoxVymazPredmet = new System.Windows.Forms.ComboBox();
             this.labelVymazPredmet = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.labelPredmet = new System.Windows.Forms.Label();
-            this.buttonImportujTabulku = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.Column2ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2Priezvisko = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2Meno = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2Znamka = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2Priemer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openFileDialogSubor = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -88,11 +90,11 @@
             // 
             // ColumnPriezvisko
             // 
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Red;
-            this.ColumnPriezvisko.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Red;
+            this.ColumnPriezvisko.DefaultCellStyle = dataGridViewCellStyle5;
             this.ColumnPriezvisko.HeaderText = "Priezvisko";
             this.ColumnPriezvisko.MinimumWidth = 6;
             this.ColumnPriezvisko.Name = "ColumnPriezvisko";
@@ -115,7 +117,8 @@
             this.Column2ID,
             this.Column2Priezvisko,
             this.Column2Meno,
-            this.Column2Znamka});
+            this.Column2Znamka,
+            this.Column2Priemer});
             this.dataGridView2.Location = new System.Drawing.Point(136, 5);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView2.Name = "dataGridView2";
@@ -123,40 +126,9 @@
             this.dataGridView2.RowTemplate.Height = 24;
             this.dataGridView2.Size = new System.Drawing.Size(627, 390);
             this.dataGridView2.TabIndex = 5;
-            // 
-            // Column2ID
-            // 
-            this.Column2ID.HeaderText = "ID";
-            this.Column2ID.Name = "Column2ID";
-            this.Column2ID.ReadOnly = true;
-            // 
-            // Column2Priezvisko
-            // 
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Red;
-            this.Column2Priezvisko.DefaultCellStyle = dataGridViewCellStyle8;
-            this.Column2Priezvisko.HeaderText = "Priezvisko";
-            this.Column2Priezvisko.MinimumWidth = 6;
-            this.Column2Priezvisko.Name = "Column2Priezvisko";
-            this.Column2Priezvisko.ReadOnly = true;
-            this.Column2Priezvisko.Width = 125;
-            // 
-            // Column2Meno
-            // 
-            this.Column2Meno.HeaderText = "Meno";
-            this.Column2Meno.MinimumWidth = 6;
-            this.Column2Meno.Name = "Column2Meno";
-            this.Column2Meno.ReadOnly = true;
-            this.Column2Meno.Width = 125;
-            // 
-            // Column2Znamka
-            // 
-            this.Column2Znamka.HeaderText = "Znamky";
-            this.Column2Znamka.MinimumWidth = 6;
-            this.Column2Znamka.Name = "Column2Znamka";
-            this.Column2Znamka.Width = 125;
+            this.dataGridView2.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellEndEdit);
+            this.dataGridView2.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView2_EditingControlShowing);
+            this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox_KeyDown);
             // 
             // buttonPridajStudenta
             // 
@@ -236,7 +208,7 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.buttonImportujTabulku);
+            this.tabPage1.Controls.Add(this.buttonImport);
             this.tabPage1.Controls.Add(this.buttonVymazPredmet);
             this.tabPage1.Controls.Add(this.comboBoxVymazPredmet);
             this.tabPage1.Controls.Add(this.labelVymazPredmet);
@@ -253,6 +225,25 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(257, 85);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(83, 26);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Importuj ziakov \r\npriamo z tabulky";
+            // 
+            // buttonImport
+            // 
+            this.buttonImport.Location = new System.Drawing.Point(245, 114);
+            this.buttonImport.Name = "buttonImport";
+            this.buttonImport.Size = new System.Drawing.Size(104, 23);
+            this.buttonImport.TabIndex = 17;
+            this.buttonImport.Text = "Importuj";
+            this.buttonImport.UseVisualStyleBackColor = true;
+            this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
             // 
             // buttonVymazPredmet
             // 
@@ -305,24 +296,49 @@
             this.labelPredmet.TabIndex = 11;
             this.labelPredmet.Text = "Predmet";
             // 
-            // buttonImportujTabulku
+            // Column2ID
             // 
-            this.buttonImportujTabulku.Location = new System.Drawing.Point(245, 114);
-            this.buttonImportujTabulku.Name = "buttonImportujTabulku";
-            this.buttonImportujTabulku.Size = new System.Drawing.Size(104, 23);
-            this.buttonImportujTabulku.TabIndex = 17;
-            this.buttonImportujTabulku.Text = "Importuj";
-            this.buttonImportujTabulku.UseVisualStyleBackColor = true;
-            this.buttonImportujTabulku.Click += new System.EventHandler(this.buttonImportujTabulku_Click);
+            this.Column2ID.HeaderText = "ID";
+            this.Column2ID.Name = "Column2ID";
+            this.Column2ID.ReadOnly = true;
             // 
-            // label1
+            // Column2Priezvisko
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(257, 85);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 26);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "Importuj ziakov \r\npriamo z tabulky";
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Red;
+            this.Column2Priezvisko.DefaultCellStyle = dataGridViewCellStyle6;
+            this.Column2Priezvisko.HeaderText = "Priezvisko";
+            this.Column2Priezvisko.MinimumWidth = 6;
+            this.Column2Priezvisko.Name = "Column2Priezvisko";
+            this.Column2Priezvisko.ReadOnly = true;
+            this.Column2Priezvisko.Width = 125;
+            // 
+            // Column2Meno
+            // 
+            this.Column2Meno.HeaderText = "Meno";
+            this.Column2Meno.MinimumWidth = 6;
+            this.Column2Meno.Name = "Column2Meno";
+            this.Column2Meno.ReadOnly = true;
+            this.Column2Meno.Width = 125;
+            // 
+            // Column2Znamka
+            // 
+            this.Column2Znamka.HeaderText = "Znamky";
+            this.Column2Znamka.MinimumWidth = 6;
+            this.Column2Znamka.Name = "Column2Znamka";
+            this.Column2Znamka.Width = 125;
+            // 
+            // Column2Priemer
+            // 
+            this.Column2Priemer.HeaderText = "Priemer";
+            this.Column2Priemer.Name = "Column2Priemer";
+            this.Column2Priemer.ReadOnly = true;
+            // 
+            // openFileDialogSubor
+            // 
+            this.openFileDialogSubor.FileName = "openFileDialog1";
             // 
             // Form1
             // 
@@ -364,12 +380,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnID;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnPriezvisko;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMeno;
+        private System.Windows.Forms.Button buttonImport;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2ID;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2Priezvisko;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2Meno;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2Znamka;
-        private System.Windows.Forms.Button buttonImportujTabulku;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2Priemer;
+        private System.Windows.Forms.OpenFileDialog openFileDialogSubor;
     }
 }
 
