@@ -36,25 +36,25 @@ namespace WindowsFormsApp1
                         string filePath = openFileDialog.FileName;
                         using (StreamReader sr = new StreamReader(filePath))
                         {
-                            dataGridView1.Rows.Clear(); // Vyčistíme DataGridView pred importom
+                            dataGridView1.Rows.Clear(); // Vyčistíme tabuľku pred importom
+                            int id = 1; // ID bude generované automaticky
 
                             string line;
                             while ((line = sr.ReadLine()) != null)
                             {
-                                string[] parts = line.Split(new char[] { ',', ';', '\t' }); // Podpora viacerých oddeľovačov
-                                if (parts.Length >= 3) // Musíme mať aspoň ID, meno a priezvisko
+                                string[] parts = line.Split(new char[] { ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (parts.Length >= 2) // Očakávame len meno a priezvisko
                                 {
-                                    string id = parts[0].Trim();
-                                    string meno = parts[1].Trim();
-                                    string priezvisko = parts[2].Trim();
+                                    string meno = parts[0].Trim();
+                                    string priezvisko = parts[1].Trim();
 
                                     dataGridView1.Rows.Add(id, meno, priezvisko);
+                                    id++; // Automaticky inkrementujeme ID
                                 }
                             }
                         }
 
-                        // Aktualizujeme ID a synchronizujeme mená
-                        UpdateStudentIDs();
+                        // Synchronizácia po importe
                         SyncNames();
                     }
                     catch (Exception ex)
@@ -64,6 +64,7 @@ namespace WindowsFormsApp1
                 }
             }
         }
+
 
 
         private void UpdateStudentIDs()
