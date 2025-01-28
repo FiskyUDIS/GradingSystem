@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ColumnID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnPriezvisko = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -54,6 +54,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.labelPredmet = new System.Windows.Forms.Label();
             this.buttonImportujTabulku = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -87,11 +88,11 @@
             // 
             // ColumnPriezvisko
             // 
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Red;
-            this.ColumnPriezvisko.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Red;
+            this.ColumnPriezvisko.DefaultCellStyle = dataGridViewCellStyle7;
             this.ColumnPriezvisko.HeaderText = "Priezvisko";
             this.ColumnPriezvisko.MinimumWidth = 6;
             this.ColumnPriezvisko.Name = "ColumnPriezvisko";
@@ -131,11 +132,11 @@
             // 
             // Column2Priezvisko
             // 
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Gainsboro;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Red;
-            this.Column2Priezvisko.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.Gainsboro;
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Red;
+            this.Column2Priezvisko.DefaultCellStyle = dataGridViewCellStyle8;
             this.Column2Priezvisko.HeaderText = "Priezvisko";
             this.Column2Priezvisko.MinimumWidth = 6;
             this.Column2Priezvisko.Name = "Column2Priezvisko";
@@ -234,6 +235,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.buttonImportujTabulku);
             this.tabPage1.Controls.Add(this.buttonVymazPredmet);
             this.tabPage1.Controls.Add(this.comboBoxVymazPredmet);
@@ -305,13 +307,22 @@
             // 
             // buttonImportujTabulku
             // 
-            this.buttonImportujTabulku.Location = new System.Drawing.Point(245, 91);
+            this.buttonImportujTabulku.Location = new System.Drawing.Point(245, 114);
             this.buttonImportujTabulku.Name = "buttonImportujTabulku";
             this.buttonImportujTabulku.Size = new System.Drawing.Size(104, 23);
             this.buttonImportujTabulku.TabIndex = 17;
-            this.buttonImportujTabulku.Text = "button1";
+            this.buttonImportujTabulku.Text = "Importuj";
             this.buttonImportujTabulku.UseVisualStyleBackColor = true;
             this.buttonImportujTabulku.Click += new System.EventHandler(this.buttonImportujTabulku_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(257, 85);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(83, 26);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Importuj ziakov \r\npriamo z tabulky";
             // 
             // Form1
             // 
@@ -358,6 +369,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2Meno;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2Znamka;
         private System.Windows.Forms.Button buttonImportujTabulku;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -34,22 +34,25 @@ namespace WindowsFormsApp1
                     try
                     {
                         string filePath = openFileDialog.FileName;
-                        using (StreamReader sr = new StreamReader(filePath))
+
+                        // Skúsime načítať súbor s Windows-1250 kódovaním (stredoeurópske kódovanie)
+                        using (StreamReader sr = new StreamReader(filePath, Encoding.GetEncoding("windows-1250")))
                         {
                             dataGridView1.Rows.Clear(); // Vyčistíme tabuľku pred importom
-                            int id = 1; // ID bude generované automaticky
+                            int id = 1; // Automatické ID
 
                             string line;
                             while ((line = sr.ReadLine()) != null)
                             {
+                                // Podpora viacerých oddeľovačov: čiarka, bodkočiarka, tabulátor
                                 string[] parts = line.Split(new char[] { ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                                if (parts.Length >= 2) // Očakávame len meno a priezvisko
+                                if (parts.Length >= 2) // Očakávame aspoň meno a priezvisko
                                 {
                                     string meno = parts[0].Trim();
                                     string priezvisko = parts[1].Trim();
 
                                     dataGridView1.Rows.Add(id, meno, priezvisko);
-                                    id++; // Automaticky inkrementujeme ID
+                                    id++;
                                 }
                             }
                         }
