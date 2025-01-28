@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace WindowsFormsApp1
 {
@@ -19,6 +21,50 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
         }
+
+        private void buttonImportujTabulku_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+                openFileDialog.Title = "Importuj tabuľku";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string filePath = openFileDialog.FileName;
+                        using (StreamReader sr = new StreamReader(filePath))
+                        {
+                            dataGridView1.Rows.Clear(); // Vyčistíme DataGridView pred importom
+
+                            string line;
+                            while ((line = sr.ReadLine()) != null)
+                            {
+                                string[] parts = line.Split(new char[] { ',', ';', '\t' }); // Podpora viacerých oddeľovačov
+                                if (parts.Length >= 3) // Musíme mať aspoň ID, meno a priezvisko
+                                {
+                                    string id = parts[0].Trim();
+                                    string meno = parts[1].Trim();
+                                    string priezvisko = parts[2].Trim();
+
+                                    dataGridView1.Rows.Add(id, meno, priezvisko);
+                                }
+                            }
+                        }
+
+                        // Aktualizujeme ID a synchronizujeme mená
+                        UpdateStudentIDs();
+                        SyncNames();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Chyba pri načítaní súboru: {ex.Message}", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
 
         private void UpdateStudentIDs()
         {
